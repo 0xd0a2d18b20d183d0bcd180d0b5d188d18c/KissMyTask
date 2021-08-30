@@ -1,0 +1,227 @@
+#!/bin/zsh
+
+PATHTODB="$HOME/.local/share/kissmytask/database.db"
+
+## Add task
+
+## Custom date and type
+if [ $1 = "act" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) \
+		VALUES ('$2', '$7', datetime('$3-$4-$5 23:59:00'), '$6');"
+fi
+
+## This day
+if [ $1 = "atd" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) \
+		VALUES ('$2', '$3', datetime('now', 'localtime', 'start of day', '+1 days', '-1 minute'), 'day')"
+fi
+
+## This week
+if [ $1 = "atw" ] && ! [ -z "$2"]
+	then
+		sqlite3 $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+		('$2', '$3', datetime('now', 'localtime', 'start of day', 'weekday 6', '+1 day', '-1 minute'), 'week')"
+fi
+
+## This month
+if [ $1 = "atm" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+		('$2', '$3', datetime('now', 'localtime', 'start of month', '+1 months', '-1 minute'), 'month')"
+fi
+
+## This year
+if [ $1 = "aty" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+		('$2', '$3', datetime('now', 'localtime', 'start of year', '+1 years', '-1 minute'), 'year')"
+fi
+
+## Next day
+if [ $1 = "and" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+		('$2', '$3', datetime('now', 'localtime', 'start of day', '+2 days', '-1 minute'), 'day')"
+fi
+
+## Next week
+if [ $1 = "anw" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+		('$2', '$3', datetime('now', 'localtime', 'start of day', 'weekday 6', '+8 day', '-1 minute'), 'week')"
+fi
+
+## Next month
+if [ $1 = "anm" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+		('$2', '$3', datetime('now', 'localtime', 'start of month', '+2 months', '-1 minute'), 'month')"
+fi
+
+## Next year
+if [ $1 = "any" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+		('$2', '$3', datetime('now', 'localtime', 'start of year', '+2 years', '-1 minute'), 'year')"
+fi
+
+## Life
+if [ $1 = "al" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+		('$2', '$3', datetime('2079-12-31 23:59:00'), 'life')"
+fi
+
+## End of add tasks section
+
+## Delete task by rowid
+
+if [ $1 = "dt" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB "DELETE FROM tasks WHERE rowid = $2"
+fi
+
+## End of delete task section
+
+## View tasks
+
+## Castom date and type
+if [ $1 = "vct" ]
+	then
+		sqlite3 $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+		datetime('$2-$3-$4 23:59:00') AND type = '$5';"
+fi
+
+## This day
+if [ $1 = "vtd" ]
+	then
+		sqlite3 $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+		datetime('now', 'localtime', 'start of day', '+1 day', '-1 minute') \
+		AND type = 'day' and isCompleted IS NULL;"
+fi
+
+## This week
+if [ $1 = "vtw" ]
+	then
+		sqlite3 $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+		datetime('now', 'localtime', 'start of day', 'weekday 6', '+1 day', '-1 minute') \
+		AND type = 'week' and isCompleted IS NULL;"
+fi
+
+## This month
+if [ $1 = "vtm" ]
+	then
+		sqlite3 $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+		datetime('now', 'localtime', 'start of month', '+1 months', '-1 minute') \
+		AND type = 'month' and isCompleted IS NULL;"
+fi
+
+## This year
+if [ $1 = "vty" ]
+	then
+		sqlite3 $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+		datetime('now', 'localtime', 'start of year', '+1 years', '-1 minute') \
+		AND type = 'year' and isCompleted IS NULL;"
+fi
+
+## Next day
+if [ $1 = "vnd" ]
+	then
+		sqlite3 $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+		datetime('now', 'localtime', 'start of day', '+2 day', '-1 minute') \
+		AND type = 'day' and isCompleted IS NULL;"
+fi
+
+## Next week
+if [ $1 = "vnw" ]
+	then
+		sqlite3 $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+		datetime('now', 'localtime', 'start of day', 'weekday 6', '+8 day', '-1 minute') \
+		AND type = 'week' and isCompleted IS NULL;"
+fi
+
+## Next month
+if [ $1 = "vnm" ]
+	then
+		sqlite3 $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+		datetime('now', 'localtime', 'start of month', '+2 months', '-1 minute') \
+		AND type = 'month' and isCompleted IS NULL;"
+fi
+
+## Next year
+if [ $1 = "vny" ]
+	then
+		sqlite3 $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+		datetime('now', 'localtime', 'start of year', '+2 years', '-1 minute') \
+		AND type = 'year' and isCompleted IS NULL;"
+fi
+
+## Next year
+if [ $1 = "vl" ]
+	then
+		sqlite3 $PATHTODB "SELECT rowid, title FROM tasks WHERE \
+		type = 'life' AND isCompleted IS NULL;"
+fi
+
+## End of view tasks section
+
+## View task's description
+
+if [ $1 = "vd" ] && ! [ -z "$2" ]
+	then
+		sqlite3 $PATHTODB ".mode list" "SELECT desc FROM tasks WHERE rowid = $2;"
+fi
+
+## End of view task's description section
+
+## Update status completed tasks
+
+if [ $1 = "ct" ]
+	then
+		sqlite3 $PATHTODB "UPDATE tasks SET isCompleted = 1 where rowid = $2;"
+fi
+
+## End of update status completed tasks section
+
+## Update status expired tasks
+
+## Day
+if [ $1 = "ud" ]
+	then
+		sqlite3 $PATHTODB "UPDATE tasks SET isExpired = 1, dateTo = \
+		datetime('now', 'localtime', 'start of day', '+1 day', '-1 minute') \
+		WHERE dateTo < datetime('now', 'localtime', 'start of day') \
+		AND type = 'day' AND isCompleted IS NULL;"
+fi
+
+## Week
+if [ $1 = "uw" ]
+	then
+		sqlite3 $PATHTODB "UPDATE tasks SET isExpired = 1, dateTo = \
+		datetime('now', 'localtime', 'start of day', 'weekday 6', '+1 day', '-1 minute') \
+		WHERE dateTo < datetime('now', 'localtime', 'start of day') \
+		AND type = 'week' AND isCompleted IS NULL;"
+fi
+
+## Month
+if [ $1 = "um" ]
+	then
+		sqlite3 $PATHTODB "UPDATE tasks SET isExpired = 1, dateTo = \
+		datetime('now', 'localtime', 'start of month', '+1 month', '-1 minute') \
+		WHERE dateTo < datetime('now', 'localtime', 'start of day') \
+		AND type = 'month' AND isCompleted IS NULL;"
+fi
+
+## Year
+if [ $1 = "uy" ]
+	then
+		sqlite3 $PATHTODB "UPDATE tasks SET isExpired = 1, dateTo = \
+		datetime('now', 'localtime', 'start of year', '+1 year', '-1 minute') \
+		WHERE dateTo < datetime('now', 'localtime', 'start of day') \
+		AND type = 'year' AND isCompleted IS NULL;"
+fi
+
+## End of update status expired tasks section
+
