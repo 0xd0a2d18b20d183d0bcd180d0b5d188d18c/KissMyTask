@@ -73,9 +73,11 @@ elif [ $1 = "vct" ]; then
 
 ## This day
 elif [ $1 = "vtd" ]; then
+	seconds="$(($(date -d "today 23:59:59" +%s)-$(date +%s)))"
+	eval "echo \"The day will end in\" $(date -ud "@$seconds" +'%H hours %M minutes %S seconds')"
 	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of day', '+1 day', '-1 minute') \
-	AND type = 'day' and isCompleted IS NULL;"
+	AND type = 'day' and isCompleted IS NULL ORDER BY title;"
 
 ## This week
 elif [ $1 = "vtw" ]; then
