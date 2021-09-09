@@ -1,20 +1,26 @@
 Kiss My Task
 
-Very simple task manager. Just sqlite table and some scripts.
+Very simple cli task manager. Just sqlite table and some scripts.
+
+How to use:
+1. Clone repo.
+2. Copy kmt file to $HOME/.local/bin
+3. Exec ```kmt init```
+4. Exec ```kmt atd "My stupid task for today"```
 
 Database structure:
 
-title - заголовок
-desc - описание
-dateTo - запланированная дата окончания
-type - тип запланированного времени (день, неделя, месяц, год, жизнь)
-isExpired - просрочена ли задача
-isCompleted - завершена ли задача
+- title - title
+- desc - description
+- dateTo - scheduled end date 
+- type - scheduled time type (day, week, month, year, life)
+- isExpired - is expired
+- isCompleted - is completed
 
-Функции:
-1. Добавить задачу (на сегодня, на завтра, на текущую неделю, на следующую неделю, на текущий  месяц, на следующий месяц, на текущий год, на следующий год)
-2. Просмотреть задачи (на сегодня, на завтра, на текущую неделю, на следующую неделю, на текущий месяц, на следующий месяц, на текущий год, на следующий год)
-3. Пометить задачу как выполненную.
-4. Обновить статусы по просроченным задачам.
-5. Добавить регулярные задачи.
+Functions:
 
+1. Add task (add this day - atd, add next day - and, add this week - atw, add next week - anw, add this month - atm, add next month - anm, add this year - aty, add next year - any, add life - al).
+2. View tasks (view this day - vtd, etc)
+3. Mark task completed (complete task - ct rowid).
+4. Refresh statuses for expired tasks (update day - ud, uw, um, uy).
+5. Add regular tasks. You can add your tasks in Update status expired tasks section.
