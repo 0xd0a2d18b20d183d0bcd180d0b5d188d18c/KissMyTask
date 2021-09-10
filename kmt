@@ -81,18 +81,24 @@ elif [ $1 = "vtd" ]; then
 
 ## This week
 elif [ $1 = "vtw" ]; then
+	seconds="$(($(date -d "today 23:59:59 +1 week -$(date +%u) days -2 hours -1 seconds" +%s)-$(date +%s)))"
+	eval "echo \"The week will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
 	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of day', 'weekday 6', '+1 day', '-1 minute') \
 	AND type = 'week' and isCompleted IS NULL;"
 
 ## This month
 elif [ $1 = "vtm" ]; then
+	seconds="$(($(date -d "$(date +%Y)-$(date +%m)-01 00:00:00 +1 month -2 hours -1 seconds" +%s)-$(date +%s)))"
+	eval "echo \"The month will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
 	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of month', '+1 months', '-1 minute') \
 	AND type = 'month' and isCompleted IS NULL;"
 
 ## This year
 elif [ $1 = "vty" ]; then
+	seconds="$(($(date -d "$(date +%Y)-12-31 23:59:59" +%s)-$(date +%s)))"
+	eval "echo \"The year will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
 	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of year', '+1 years', '-1 minute') \
 	AND type = 'year' and isCompleted IS NULL;"
