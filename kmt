@@ -68,21 +68,11 @@ elif [ $1 = "dt" ] && ! [ -z "$2" ]; then
 
 ## View all tasks in series
 elif [ $1 = "v" ]; then
-	kmt vtd
-	read temp
-	clear
-	kmt vtw
-	read temp
-	clear
-	kmt vtm
-	read temp
-	clear
-	kmt vty
-	read temp
-	clear
-	kmt vl
-	read temp
-	clear
+	kmt vtd; read; clear
+	kmt vtw; read; clear
+	kmt vtm; read; clear
+	kmt vty; read; clear
+	kmt vl;  read; clear
 
 ## Custom date and type
 elif [ $1 = "vct" ]; then
