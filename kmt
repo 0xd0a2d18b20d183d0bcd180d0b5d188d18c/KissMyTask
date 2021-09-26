@@ -66,7 +66,25 @@ elif [ $1 = "dt" ] && ! [ -z "$2" ]; then
 
 ## View tasks
 
-## Castom date and type
+## View all tasks in series
+elif [ $1 = "v" ]; then
+	kmt vtd
+	read temp
+	clear
+	kmt vtw
+	read temp
+	clear
+	kmt vtm
+	read temp
+	clear
+	kmt vty
+	read temp
+	clear
+	kmt vl
+	read temp
+	clear
+
+## Custom date and type
 elif [ $1 = "vct" ]; then
 	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
 	datetime('$3 23:59:00') AND type = '$2';"
@@ -127,8 +145,10 @@ elif [ $1 = "vny" ]; then
 	datetime('now', 'localtime', 'start of year', '+2 years', '-1 minute') \
 	AND type = 'year' and isCompleted IS NULL;"
 
-## Next year
+## Life
 elif [ $1 = "vl" ]; then
+	seconds="$(($(date -d "2079-12-31 23:59:59" +%s)-$(date +%s)))"
+	eval "echo \"The week will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
 	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE \
 	type = 'life' AND isCompleted IS NULL;"
 
@@ -200,7 +220,7 @@ elif [ $1 = "init" ]; then
 		(title TEXT NOT NULL, desc TEXT, dateTo DATETIME NOT NULL, \
 		type TEXT NOT NULL, isExpired BOOLEAN, isCompleted BOOLEAN);"
 	else
-		echo "Database is exists. Exec clenup before."
+		echo "Database is exists. Remove $PATHTODB before."
 	fi
 
 ## Backup
@@ -213,10 +233,10 @@ elif [ $1 = "recovery" ]; then
 		cp $2 $PATHTODB
 	fi
 
-## Delete
-elif [ $1 = "delete"] && [ $2 = "yes_I_am_sure" ]; then
-	rm -r $PATHTO
-
 ## End of system methods section
+
+else
+	echo "Error in input"
+
 fi
 
