@@ -76,14 +76,14 @@ elif [ $1 = "v" ]; then
 
 ## Custom date and type
 elif [ $1 = "vct" ]; then
-	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('$3 23:59:00') AND type = '$2' GROUP BY title ORDER BY title;"
 
 ## This day
 elif [ $1 = "vtd" ]; then
 	seconds="$(($(date -d "today 23:59:59" +%s)-$(date +%s)))"
 	eval "echo \"The day will end in\" $(date -ud "@$seconds" +'%H hours %M minutes %S seconds')"
-	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of day', '+1 day', '-1 minute') \
 	AND type = 'day' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
@@ -91,7 +91,7 @@ elif [ $1 = "vtd" ]; then
 elif [ $1 = "vtw" ]; then
 	seconds="$(($(date -d "today 23:59:59 +1 week -$(date +%u) days -2 hours -1 seconds" +%s)-$(date +%s)))"
 	eval "echo \"The week will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
-	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of day', 'weekday 6', '+1 day', '-1 minute') \
 	AND type = 'week' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
@@ -99,7 +99,7 @@ elif [ $1 = "vtw" ]; then
 elif [ $1 = "vtm" ]; then
 	seconds="$(($(date -d "$(date +%Y)-$(date +%m)-01 00:00:00 +1 month -2 hours -1 seconds" +%s)-$(date +%s)))"
 	eval "echo \"The month will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
-	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of month', '+1 months', '-1 minute') \
 	AND type = 'month' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
@@ -107,31 +107,31 @@ elif [ $1 = "vtm" ]; then
 elif [ $1 = "vty" ]; then
 	seconds="$(($(date -d "$(date +%Y)-12-31 23:59:59" +%s)-$(date +%s)))"
 	eval "echo \"The year will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
-	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of year', '+1 years', '-1 minute') \
 	AND type = 'year' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## Next day
 elif [ $1 = "vnd" ]; then
-	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of day', '+2 day', '-1 minute') \
 	AND type = 'day' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## Next week
 elif [ $1 = "vnw" ]; then
-	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of day', 'weekday 6', '+8 day', '-1 minute') \
 	AND type = 'week' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## Next month
 elif [ $1 = "vnm" ]; then
-	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of month', '+2 months', '-1 minute') \
 	AND type = 'month' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## Next year
 elif [ $1 = "vny" ]; then
-	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of year', '+2 years', '-1 minute') \
 	AND type = 'year' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
@@ -139,7 +139,7 @@ elif [ $1 = "vny" ]; then
 elif [ $1 = "vl" ]; then
 	seconds="$(($(date -d "2079-12-31 23:59:59" +%s)-$(date +%s)))"
 	eval "echo \"The week will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
-	sqlite3 -batch $PATHTODB "SELECT rowid, title FROM tasks WHERE \
+	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE \
 	type = 'life' AND isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## End of view tasks section
