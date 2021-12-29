@@ -1,165 +1,194 @@
 #!/bin/zsh
 
-PATHTODB="$HOME/.local/share/kissmytask/database.db"
 PATHTO="$HOME/.local/share/kissmytask/"
 
 ## Add task
 
 ## Custom date and type
-if [ $1 = "act" ] && ! [ -z "$2" ] && ! [ -z "$3" ] && ! [ -z "$4" ]; then
-	sqlite3 -batch $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) \
+if ! [ -z "$1" ] && [ $1 = "act" ] && ! [ -z "$2" ] && ! [ -z "$3" ] && ! [ -z "$4" ]; then
+	sqlite3 -batch $PATHTO"database.db" "INSERT INTO tasks (title, desc, dateTo, type) \
 	VALUES ('$2', '$5', datetime('$4 23:59:00'), '$3');"
 
 ## This day
-elif [ $1 = "atd" ] && ! [ -z "$2" ]; then
-	sqlite3 -batch $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) \
+elif ! [ -z "$1" ] && [ $1 = "atd" ] && ! [ -z "$2" ]; then
+	sqlite3 -batch $PATHTO"database.db" "INSERT INTO tasks (title, desc, dateTo, type) \
 	VALUES ('$2', '$3', datetime('now', 'localtime', 'start of day', '+1 days', '-1 minute'), 'day')"
 
 ## This week
-elif [ $1 = "atw" ] && ! [ -z "$2"]; then
-	sqlite3 -batch $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+elif ! [ -z "$1" ] && [ $1 = "atw" ] && ! [ -z "$2"]; then
+	sqlite3 -batch $PATHTO"database.db" "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
 	('$2', '$3', datetime('now', 'localtime', 'start of day', 'weekday 6', '+1 day', '-1 minute'), 'week')"
 
 ## This month
-elif [ $1 = "atm" ] && ! [ -z "$2" ]; then
-	sqlite3 -batch $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+elif ! [ -z "$1" ] && [ $1 = "atm" ] && ! [ -z "$2" ]; then
+	sqlite3 -batch $PATHTO"database.db" "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
 	('$2', '$3', datetime('now', 'localtime', 'start of month', '+1 months', '-1 minute'), 'month')"
 
 ## This year
-elif [ $1 = "aty" ] && ! [ -z "$2" ]; then
-	sqlite3 -batch $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+elif ! [ -z "$1" ] && [ $1 = "aty" ] && ! [ -z "$2" ]; then
+	sqlite3 -batch $PATHTO"database.db" "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
 	('$2', '$3', datetime('now', 'localtime', 'start of year', '+1 years', '-1 minute'), 'year')"
 
 ## Next day
-elif [ $1 = "and" ] && ! [ -z "$2" ]; then
-	sqlite3 -batch $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+elif ! [ -z "$1" ] && [ $1 = "and" ] && ! [ -z "$2" ]; then
+	sqlite3 -batch $PATHTO"database.db" "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
 	('$2', '$3', datetime('now', 'localtime', 'start of day', '+2 days', '-1 minute'), 'day')"
 
 ## Next week
-elif [ $1 = "anw" ] && ! [ -z "$2" ]; then
-	sqlite3 -batch $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+elif ! [ -z "$1" ] && [ $1 = "anw" ] && ! [ -z "$2" ]; then
+	sqlite3 -batch $PATHTO"database.db" "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
 	('$2', '$3', datetime('now', 'localtime', 'start of day', 'weekday 6', '+8 day', '-1 minute'), 'week')"
 
 ## Next month
-elif [ $1 = "anm" ] && ! [ -z "$2" ]; then
-	sqlite3 -batch $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+elif ! [ -z "$1" ] && [ $1 = "anm" ] && ! [ -z "$2" ]; then
+	sqlite3 -batch $PATHTO"database.db" "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
 	('$2', '$3', datetime('now', 'localtime', 'start of month', '+2 months', '-1 minute'), 'month')"
 
 ## Next year
-elif [ $1 = "any" ] && ! [ -z "$2" ]; then
-	sqlite3 -batch $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+elif ! [ -z "$1" ] && [ $1 = "any" ] && ! [ -z "$2" ]; then
+	sqlite3 -batch $PATHTO"database.db" "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
 	('$2', '$3', datetime('now', 'localtime', 'start of year', '+2 years', '-1 minute'), 'year')"
 
 ## Life
-elif [ $1 = "al" ] && ! [ -z "$2" ]; then
-	sqlite3 -batch $PATHTODB "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
+elif ! [ -z "$1" ] && [ $1 = "al" ] && ! [ -z "$2" ]; then
+	sqlite3 -batch $PATHTO"database.db" "INSERT INTO tasks (title, desc, dateTo, type) VALUES \
 	('$2', '$3', datetime('2079-12-31 23:59:00'), 'life')"
 
 ## End of add tasks section
 
 ## Delete task by rowid
 
-elif [ $1 = "dt" ] && ! [ -z "$2" ]; then
-	sqlite3 -batch $PATHTODB "DELETE FROM tasks WHERE rowid = $2"
+elif ! [ -z "$1" ] && [ $1 = "dt" ] && ! [ -z "$2" ]; then
+	sqlite3 -batch $PATHTO"database.db" "DELETE FROM tasks WHERE rowid = $2"
 
 ## End of delete task section
 
 ## View tasks
 
 ## View all tasks in series
-elif [ $1 = "v" ]; then
-	kmt vtd; read; clear
-	kmt vtw; read; clear
-	kmt vtm; read; clear
-	kmt vty; read; clear
-	kmt vl;  read; clear
+elif ! [ -z "$1" ] && [ $1 = "v" ]; then
+	clear
+	while true; do
+		kmt vl; read ex; clear
+		if [[ $ex == "q" ]]; then exit; fi
+		kmt vty; read ex; clear
+		if [[ $ex == "q" ]]; then exit; fi
+		kmt vtm; read ex; clear
+		if [[ $ex == "q" ]]; then exit; fi
+		kmt vtw; read ex; clear
+		if [[ $ex == "q" ]]; then exit; fi
+		kmt vtd; read ex; clear
+		if [[ $ex == "q" ]]; then exit; fi
+	done
 
 ## Custom date and type
-elif [ $1 = "vct" ]; then
-	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
+elif ! [ -z "$1" ] && [ $1 = "vct" ]; then
+	sqlite3 -batch $PATHTO"database.db" "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('$3 23:59:00') AND type = '$2' GROUP BY title ORDER BY title;"
 
 ## This day
-elif [ $1 = "vtd" ]; then
+elif ! [ -z "$1" ] && [ $1 = "vtd" ]; then
+	lastday="$(cat $PATHTO"lastdayupdate")"
+	if (( $(date -d "today 23:59:59" +%s) > $(date -d "$lastday 23:59:59" +%s) )); then
+		for i in {1..$((($(date -d "today 23:59:59" +%s) - $(date -d "$lastday 23:59:59" +%s)) / 86400))}
+		do; kmt ud; done
+	fi
 	seconds="$(($(date -d "today 23:59:59" +%s)-$(date +%s)))"
 	eval "echo \"The day will end in\" $(date -ud "@$seconds" +'%H hours %M minutes %S seconds')"
-	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTO"database.db" "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of day', '+1 day', '-1 minute') \
 	AND type = 'day' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## This week
-elif [ $1 = "vtw" ]; then
+elif ! [ -z "$1" ] && [ $1 = "vtw" ]; then
+	lastweek="$(cat $PATHTO"lastweekupdate")"
+	if (( $(date -d "today 23:59:59 +1 week -$(date +%u) days -2 hours -1 seconds" +%s) > $(date -d "$lastweek 23:59:59 +1 week -$(date -d "$lastweek" +%u) days -2 hours -1 seconds" +%s) )); then
+		for i in {1..$((($(date -d "today 23:59:59" +%s) - $(date -d "$lastweek 23:59:59" +%s)) / 86400))}
+		do; kmt uw; done
+	fi
 	seconds="$(($(date -d "today 23:59:59 +1 week -$(date +%u) days -2 hours -1 seconds" +%s)-$(date +%s)))"
 	eval "echo \"The week will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
-	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTO"database.db" "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of day', 'weekday 6', '+1 day', '-1 minute') \
 	AND type = 'week' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## This month
-elif [ $1 = "vtm" ]; then
+elif ! [ -z "$1" ] && [ $1 = "vtm" ]; then
+	lastmonth="$(cat $PATHTO"lastmonthupdate")"
+	if (( $(date -d "$(date +%Y)-$(date +%m)-01 00:00:01" +%s) > $(date -d "$lastmonth-01 00:00:01" +%s) )); then
+		for i in {0..$((($(date +%Y) - $(date -d "$lastmonth-01 00:00:01" +%Y))))}; do
+			for i in {1..$((($(date +%m) - $(date -d "$lastmonth-01 00:00:01" +%m))))}
+			do; kmt um; done
+		done
+	fi
 	seconds="$(($(date -d "$(date +%Y)-$(date +%m)-01 00:00:00 +1 month -2 hours -1 seconds" +%s)-$(date +%s)))"
 	eval "echo \"The month will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
-	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTO"database.db" "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of month', '+1 months', '-1 minute') \
 	AND type = 'month' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## This year
-elif [ $1 = "vty" ]; then
+elif ! [ -z "$1" ] && [ $1 = "vty" ]; then
+	lastyear="$(cat $PATHTO"lastyearupdate")"
+	if (( $(date +%Y) > $lastyear )); then
+		for i in {1..$(($(date +%Y) - $lastyear))}
+		do; kmt uy; done;
+	fi
 	seconds="$(($(date -d "$(date +%Y)-12-31 23:59:59" +%s)-$(date +%s)))"
 	eval "echo \"The year will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
-	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
+	sqlite3 -batch $PATHTO"database.db" "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of year', '+1 years', '-1 minute') \
 	AND type = 'year' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## Next day
-elif [ $1 = "vnd" ]; then
-	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
+elif ! [ -z "$1" ] && [ $1 = "vnd" ]; then
+	sqlite3 -batch $PATHTO"database.db" "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of day', '+2 day', '-1 minute') \
 	AND type = 'day' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## Next week
-elif [ $1 = "vnw" ]; then
-	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
+elif ! [ -z "$1" ] && [ $1 = "vnw" ]; then
+	sqlite3 -batch $PATHTO"database.db" "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of day', 'weekday 6', '+8 day', '-1 minute') \
 	AND type = 'week' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## Next month
-elif [ $1 = "vnm" ]; then
-	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
+elif ! [ -z "$1" ] && [ $1 = "vnm" ]; then
+	sqlite3 -batch $PATHTO"database.db" "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of month', '+2 months', '-1 minute') \
 	AND type = 'month' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## Next year
-elif [ $1 = "vny" ]; then
-	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
+elif ! [ -z "$1" ] && [ $1 = "vny" ]; then
+	sqlite3 -batch $PATHTO"database.db" "SELECT rowid, title, count(*) FROM tasks WHERE dateTo = \
 	datetime('now', 'localtime', 'start of year', '+2 years', '-1 minute') \
 	AND type = 'year' and isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## Life
-elif [ $1 = "vl" ]; then
+elif ! [ -z "$1" ] && [ $1 = "vl" ]; then
 	seconds="$(($(date -d "2079-12-31 23:59:59" +%s)-$(date +%s)))"
-	eval "echo \"The week will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
-	sqlite3 -batch $PATHTODB "SELECT rowid, title, count(*) FROM tasks WHERE \
+	eval "echo \"The life will end in\" $(date -ud "@$seconds" +'$((%s/3600/24)) days %H hours %M minutes %S seconds')"
+	sqlite3 -batch $PATHTO"database.db" "SELECT rowid, title, count(*) FROM tasks WHERE \
 	type = 'life' AND isCompleted IS NULL GROUP BY title ORDER BY title;"
 
 ## End of view tasks section
 
 ## View task's description
 
-elif [ $1 = "vd" ] && ! [ -z "$2" ]; then
-	sqlite3 -batch $PATHTODB ".mode list" "SELECT desc FROM tasks WHERE rowid = $2;"
+elif ! [ -z "$1" ] && [ $1 = "vd" ] && ! [ -z "$2" ]; then
+	sqlite3 -batch $PATHTO"database.db" ".mode list" "SELECT desc FROM tasks WHERE rowid = $2;"
 
 ## End of view task's description section
 
 ## Update tasks
 
 ## Update status completed tasks
-elif [ $1 = "ct" ]; then
-	sqlite3 -batch $PATHTODB "UPDATE tasks SET isCompleted = 1 where rowid = $2;"
+elif ! [ -z "$1" ] && [ $1 = "ct" ]; then
+	sqlite3 -batch $PATHTO"database.db" "UPDATE tasks SET isCompleted = 1 where rowid = $2;"
 
 ## Update type and date
-elif [ $1 = "ut" ] && ! [ -z "$2" ] && ! [ -z "$3" ] && ! [ -z "$4" ]; then
-	sqlite3 -batch $PATHTODB "UPDATE tasks SET type = '$3', dateTo = \
+elif ! [ -z "$1" ] && [ $1 = "ut" ] && ! [ -z "$2" ] && ! [ -z "$3" ] && ! [ -z "$4" ]; then
+	sqlite3 -batch $PATHTO"database.db" "UPDATE tasks SET type = '$3', dateTo = \
 	datetime('$4 23:59:00') WHERE rowid = $2;"
 
 ## End of update tasks section
@@ -167,60 +196,66 @@ elif [ $1 = "ut" ] && ! [ -z "$2" ] && ! [ -z "$3" ] && ! [ -z "$4" ]; then
 ## Update status expired tasks
 
 ## Day
-elif [ $1 = "ud" ]; then
-	sqlite3 -batch $PATHTODB "UPDATE tasks SET isExpired = 1, dateTo = \
+elif ! [ -z "$1" ] && [ $1 = "ud" ]; then
+	sqlite3 -batch $PATHTO"database.db" "UPDATE tasks SET isExpired = 1, dateTo = \
 	datetime('now', 'localtime', 'start of day', '+1 day', '-1 minute') \
 	WHERE dateTo < datetime('now', 'localtime', 'start of day') \
 	AND type = 'day' AND isCompleted IS NULL;"
 	kmt atd "Do 10 push-ups"
 	kmt atd "Do 10 squats"
 	kmt atd "Read 10 pages"
+	kmt atd "1 hour to learn English "
+	echo "$(date +%D)" > $PATHTO"lastdayupdate"
 
 ## Week
-elif [ $1 = "uw" ]; then
-	sqlite3 -batch $PATHTODB "UPDATE tasks SET isExpired = 1, dateTo = \
+elif ! [ -z "$1" ] && [ $1 = "uw" ]; then
+	sqlite3 -batch $PATHTO"database.db" "UPDATE tasks SET isExpired = 1, dateTo = \
 	datetime('now', 'localtime', 'start of day', 'weekday 6', '+1 day', '-1 minute') \
 	WHERE dateTo < datetime('now', 'localtime', 'start of day') \
 	AND type = 'week' AND isCompleted IS NULL;"
+	kmt atw "Implement one feature / fix in any of my projects"
+	echo "$(date +%D)" > $PATHTO"lastweekupdate"
 
 ## Month
-elif [ $1 = "um" ]; then
-	sqlite3 -batch $PATHTODB "UPDATE tasks SET isExpired = 1, dateTo = \
+elif ! [ -z "$1" ] && [ $1 = "um" ]; then
+	sqlite3 -batch $PATHTO"database.db" "UPDATE tasks SET isExpired = 1, dateTo = \
 	datetime('now', 'localtime', 'start of month', '+1 month', '-1 minute') \
 	WHERE dateTo < datetime('now', 'localtime', 'start of day') \
 	AND type = 'month' AND isCompleted IS NULL;"
+	echo "$(date +%Y)-$(date +%m)" > $PATHTO"lastmonthupdate"
 
 ## Year
-elif [ $1 = "uy" ]; then
-	sqlite3 -batch $PATHTODB "UPDATE tasks SET isExpired = 1, dateTo = \
+elif ! [ -z "$1" ] && [ $1 = "uy" ]; then
+	sqlite3 -batch $PATHTO"database.db" "UPDATE tasks SET isExpired = 1, dateTo = \
 	datetime('now', 'localtime', 'start of year', '+1 year', '-1 minute') \
 	WHERE dateTo < datetime('now', 'localtime', 'start of day') \
 	AND type = 'year' AND isCompleted IS NULL;"
+	echo "$(date +%Y)" > $PATHTO"lastyearupdate"
 
 ## End of update status expired tasks section
 
 ## System methods
 
 ## Init
-elif [ $1 = "init" ]; then
-	if ! [ -f "$PATHTODB" ]; then
+elif ! [ -z "$1" ] && [ $1 = "init" ]; then
+	if ! [ -f "$PATHTO"database.db"" ]; then
 		mkdir -p $PATHTO
-		touch $PATHTODB
-		sqlite3 -batch $PATHTODB "CREATE TABLE IF NOT EXISTS tasks \
+		touch $PATHTO"database.db"
+		sqlite3 -batch $PATHTO"database.db" "CREATE TABLE IF NOT EXISTS tasks \
 		(title TEXT NOT NULL, desc TEXT, dateTo DATETIME NOT NULL, \
 		type TEXT NOT NULL, isExpired BOOLEAN, isCompleted BOOLEAN);"
 	else
-		echo "Database is exists. Remove $PATHTODB before."
+		echo "Database is exists. Exec cleanup before."
 	fi
 
 ## Backup
-elif [ $1 = "backup" ]; then
-	cp $PATHTODB ./database_$(date '+%Y-%m-%d').db
+elif ! [ -z "$1" ] && [ $1 = "backup" ] && ! [ -z "$2" ]; then
+	cp $PATHTO"database.db" $2/database_$(date '+%Y-%m-%d').db
 
 ## Recovery from backup
-elif [ $1 = "recovery" ]; then
+elif ! [ -z "$1" ] && [ $1 = "recovery" ]; then
 	if ! [ -z $2 ]; then
-		cp $2 $PATHTODB
+		cp $2 $PATHTO"database.db"
 	fi
 
 ## End of system methods section
@@ -229,4 +264,3 @@ else
 	echo "Error in input"
 
 fi
-
